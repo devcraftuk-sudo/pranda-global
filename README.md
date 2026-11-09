@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pranda Global
 
-## Getting Started
+Institutional website for Pranda Global, built with Next.js App Router and TypeScript. The site is a single English page covering cross-border financial fraud, asset recovery, investor protection, and legal strategy.
 
-First, run the development server:
+## Develop
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contact form
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`POST /api/contact` validates the submission and sends it through the provider selected by `EMAIL_PROVIDER`. The visitor’s email is the Reply-To address, and `CONTACT_FROM_EMAIL` is the From address. Success is shown only after the provider accepts the message. Credentials and provider errors stay on the server.
 
-## Learn More
+Copy `.env.example` to `.env.local` for local delivery. On Vercel, set the same variables in Project Settings → Environment Variables, then redeploy. `BOOKING_URL` and `PRIVACY_POLICY_URL` are read when the page is built, so a redeploy is required after changing them.
 
-To learn more about Next.js, take a look at the following resources:
+### Resend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Set `EMAIL_PROVIDER=resend` and `RESEND_API_KEY`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Before mail will send, verify the domain of `CONTACT_FROM_EMAIL` in the [Resend dashboard](https://resend.com/domains) and add the DNS records Resend provides (SPF and DKIM). An unverified domain is rejected, and the form shows a generic failure.
 
-## Deploy on Vercel
+### SMTP
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Set `EMAIL_PROVIDER=smtp` plus `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, and `SMTP_PASSWORD`. Port 465 uses implicit TLS; any other port uses STARTTLS.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The account in `SMTP_USER` must be allowed to send as `CONTACT_FROM_EMAIL`. Most providers require that sender to be verified in their dashboard before they will accept mail.
+
+## Editable content
+
+Client-approved wording, the portrait path, and the public footer links live in `src/lib/site.ts`. `publicEmail` is the address opened by the footer email icon. `CONTACT_TO_EMAIL` is only the contact-form recipient.
+
+## Deploy
+
+Import the repository in Vercel. The framework preset is Next.js and no extra build configuration is required. Set the environment variables above, then deploy.
+
+## Before publication
+
+- Add confirmed Instagram and WhatsApp URLs in `contactChannels`, and set `publicEmail` for the footer email icon.
+- Set `BOOKING_URL` and `PRIVACY_POLICY_URL` once the client supplies them.
+- Set the email variables and complete sender verification, then send a test message.
+- The hero and quote photographs are licensed stand-ins. Replace them if the client supplies their own photography.
+
+## Photographs
+
+- World Trade Center, Montevideo — [JacobinoWunsh](https://commons.wikimedia.org/wiki/File:World_Trade_Center_of_Montevideo.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+- Puente de la Mujer, Buenos Aires — [Jorge Lascar](https://commons.wikimedia.org/wiki/File:Puente_de_la_mujer_Buenos_Aires_Argentina.JPG), [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
