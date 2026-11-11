@@ -1,15 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --ivory: #f8f6f1;
+  --ivory: #faf6ee;
+  --cream: #f7efe1;
+  --linen: #f3e9da;
+  --sand: #efe0cc;
+  --clay: #e8d5be;
   --navy: #142238;
   --slate: #526274;
   --brass: #a7895c;
-  --line: #e4e0d6;
+  --line: #ddd0be;
 }
 
 @theme inline {
   --color-ivory: var(--ivory);
+  --color-cream: var(--cream);
+  --color-linen: var(--linen);
+  --color-sand: var(--sand);
+  --color-clay: var(--clay);
   --color-navy: var(--navy);
   --color-slate: var(--slate);
   --color-brass: var(--brass);

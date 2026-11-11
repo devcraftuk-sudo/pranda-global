@@ -35,7 +35,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-ivory/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-navy/10 bg-clay/95 backdrop-blur-sm">
       <div className="mx-auto flex min-h-20 max-w-6xl items-center justify-between gap-6 px-6 py-3">
         <a href="#top" className="flex flex-col leading-none">
           <span className="font-serif text-xl tracking-tight text-navy">{firmName}</span>
@@ -46,7 +46,7 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm tracking-wide text-slate transition-colors duration-300 hover:text-navy"
+              className="relative inline-block pb-1 text-base tracking-wide text-slate transition-colors duration-500 hover:text-navy focus-visible:text-navy after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-brass after:transition-transform after:duration-500 after:ease-out after:content-[''] hover:after:scale-x-100 focus-visible:after:scale-x-100"
             >
               {link.label}
             </a>
@@ -67,7 +67,7 @@ export function Header() {
         ref={menuRef}
         id={menuId}
         hidden={!open}
-        className="border-t border-line md:hidden"
+        className="border-t border-navy/10 md:hidden"
       >
         <nav aria-label="Mobile" className="mx-auto flex max-w-6xl flex-col px-6 py-4">
           {navLinks.map((link) => (
@@ -75,7 +75,7 @@ export function Header() {
               key={link.href}
               href={link.href}
               onClick={closeMenu}
-              className="border-b border-line py-4 text-base text-navy last:border-b-0"
+              className="relative border-b border-navy/10 py-4 text-lg tracking-wide text-navy transition-colors duration-500 last:border-b-0 hover:text-brass focus-visible:text-brass after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:h-px after:w-12 after:origin-left after:scale-x-0 after:bg-brass after:transition-transform after:duration-500 after:ease-out after:content-[''] hover:after:scale-x-100 focus-visible:after:scale-x-100"
             >
               {link.label}
             </a>

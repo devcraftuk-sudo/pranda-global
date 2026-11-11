@@ -76,20 +76,23 @@ export type ContactChannelId = "instagram" | "email" | "location" | "whatsapp";
  */
 export const publicEmail: string = "";
 
+/** Street View of the office, opened by the footer location button. */
+export const locationUrl =
+  "https://www.google.com/maps/@-34.9044797,-56.1413547,26a,75y,346.7h,89.57t/data=!3m7!1e1!3m5!1sl-QJ_J2HpveOwCeKoIIQIg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.clients6.google.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0.4278026311472729%26panoid%3Dl-QJ_J2HpveOwCeKoIIQIg%26yaw%3D346.704992628144!7i16384!8i8192";
+
+/** WhatsApp chat for +55 47 9916-1313. */
+export const whatsappUrl = "https://wa.me/554799161313";
+
 /**
  * Footer contact destinations, in display order.
  * The button is always shown. An empty href stays unlinked until confirmed.
- * The email button uses publicEmail. The location link uses the Montevideo address.
+ * The email button uses publicEmail.
  */
 export const contactChannels: { id: ContactChannelId; label: string; href: string }[] = [
   { id: "instagram", label: "Instagram", href: "" },
   { id: "email", label: "Email", href: "" },
-  {
-    id: "location",
-    label: "Location",
-    href: "https://www.google.com/maps/search/?api=1&query=Pl%C3%A1cido%20Ellauri%203359%2C%20Montevideo%2C%20Uruguay",
-  },
-  { id: "whatsapp", label: "WhatsApp", href: "" },
+  { id: "location", label: "Location", href: locationUrl },
+  { id: "whatsapp", label: "WhatsApp", href: whatsappUrl },
 ];
 
 /** Approved personal biography, in paragraph order. */

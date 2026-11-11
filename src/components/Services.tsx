@@ -2,7 +2,7 @@ import { services } from "@/lib/site";
 
 export function Services() {
   return (
-    <section id="services" className="scroll-mt-24 px-6 py-24 lg:py-32">
+    <section id="services" className="scroll-mt-24 bg-linen px-6 py-24 lg:py-32">
       <div className="mx-auto max-w-6xl">
         <div className="reveal">
           <p className="text-xs tracking-[0.18em] text-slate uppercase">Services</p>

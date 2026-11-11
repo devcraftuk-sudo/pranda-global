@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { Arrow } from "@/components/Arrow";
+import { whatsappUrl } from "@/lib/site";
 
 export function Hero() {
   return (
-    <section className="lg:grid lg:min-h-[calc(100svh-5rem)] lg:grid-cols-2">
+    <section className="bg-sand lg:grid lg:min-h-[calc(100svh-5rem)] lg:grid-cols-2">
       <div className="reveal relative order-1 flex flex-col justify-center px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
         <svg
           aria-hidden="true"
@@ -22,7 +23,7 @@ export function Hero() {
           Legal strategy and coordination for investors and counsel across Uruguay, Brazil, and
           Argentina.
         </p>
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
           <a
             href="#contact"
             className="group inline-flex items-center justify-center gap-2 bg-navy px-6 py-3 text-sm tracking-wide text-ivory transition-colors duration-300 hover:bg-brass hover:text-navy"
@@ -35,6 +36,15 @@ export function Hero() {
             className="inline-flex items-center justify-center border border-navy/20 px-6 py-3 text-sm tracking-wide text-navy transition-colors duration-300 hover:border-brass"
           >
             Explore services
+          </a>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center justify-center gap-2 border border-navy/20 px-6 py-3 text-sm tracking-wide text-navy transition-colors duration-300 hover:border-brass"
+          >
+            Talk to a specialist now
+            <Arrow />
           </a>
         </div>
       </div>

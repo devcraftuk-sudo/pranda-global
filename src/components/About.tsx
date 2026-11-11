@@ -4,7 +4,7 @@ import { about, biography, portraitAlt, portraitName, portraitSrc } from "@/lib/
 
 export function About() {
   return (
-    <section id="about" className="scroll-mt-24 px-6 py-24 lg:py-32">
+    <section id="about" className="scroll-mt-24 bg-cream px-6 py-24 lg:py-32">
       <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[minmax(0,18rem)_1fr] md:gap-20">
         <div className="reveal">
           {portraitSrc ? (
@@ -21,7 +21,7 @@ export function About() {
               <figcaption className="mt-4 font-serif text-xl text-navy">{portraitName}</figcaption>
             </figure>
           ) : (
-            <div className="flex aspect-[3/4] w-full max-w-xs items-end border border-dashed border-brass/80 bg-white p-6">
+            <div className="flex aspect-[3/4] w-full max-w-xs items-end border border-dashed border-brass/80 bg-ivory p-6">
               <p className="text-sm leading-relaxed text-slate">
                 Portrait to be supplied. This section stands as text until the client’s photograph
                 is added.

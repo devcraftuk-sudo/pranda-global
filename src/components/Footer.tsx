@@ -27,7 +27,7 @@ export function Footer({ privacyUrl }: { privacyUrl: string }) {
   const channels = contactButtons();
 
   return (
-    <footer className="border-t border-line bg-ivory text-navy">
+    <footer className="border-t border-line bg-sand text-navy">
       <div className="mx-auto grid max-w-6xl gap-14 px-6 py-16 sm:py-20 md:grid-cols-3 md:items-start md:gap-12 lg:gap-16 lg:py-24">
         <div className="reveal">
           <h2 className="text-xs tracking-[0.18em] text-navy uppercase">Company</h2>
