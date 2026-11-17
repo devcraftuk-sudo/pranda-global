@@ -14,7 +14,31 @@ export const navLinks = [
   { href: "#services", label: "Services" },
   { href: "#jurisdictions", label: "Jurisdictions" },
   { href: "#about", label: "About" },
+  { href: "#press", label: "Press" },
   { href: "#contact", label: "Contact" },
+] as const;
+
+/** Press slider. Each slide shows the article capture and opens that story. */
+export const pressItems = [
+  {
+    title:
+      "Patricia Regules is interviewed on Central Bank’s Supervision of Financial Institutions",
+    image: "/images/1.png",
+    alt: "Article page about a radio interview on the Sara Goldring case",
+    href: "https://www.sarandi690.com.uy/noticias/e7giLHbsru9BmrQOmaLK",
+  },
+  {
+    title: "Pranda Global joins US firm to initiate FINRA arbitration",
+    image: "/images/2.png",
+    alt: "Article page about a FINRA claim against Jefferies and Pershing",
+    href: "https://financefeeds.com/goldring-investors-file-finra-claim-against-jefferies-and-pershing-over-alleged-100-million-fraud/",
+  },
+  {
+    title: "Pranda Global goes to ADM Lunch with local authorities",
+    image: "/images/3.png",
+    alt: "Article page about an ADM lunch with local authorities",
+    href: "https://adm.com.uy/eventos/dr-guillermo-tolosa-destaco-en-adm-el-valor-de-la-estabilidad-economica-como-ventaja-competitiva-para-uruguay/",
+  },
 ] as const;
 
 export const services = [
