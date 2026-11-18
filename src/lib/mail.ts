@@ -1,34 +1,22 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 /**
- * Email delivery is selected entirely by environment variables.
- * EMAIL_PROVIDER=resend uses the Resend HTTP API.
- * EMAIL_PROVIDER=smtp uses the SMTP settings below.
- * The From address must be a sender the chosen provider has verified.
+ * Contact mail is sent only through Resend.
+ * The recipient is CONTACT_TO_EMAIL. The visitor never chooses it.
+ * CONTACT_FROM_EMAIL must be a sender Resend has verified.
  */
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const SUBJECT = "New website enquiry — Pranda Global";
 
 type ResendConfig = {
   ok: true;
-  provider: "resend";
   to: string;
   from: string;
   apiKey: string;
 };
 
-type SmtpConfig = {
-  ok: true;
-  provider: "smtp";
-  to: string;
-  from: string;
-  host: string;
-  port: number;
-  user: string;
-  password: string;
-};
-
-export type MailConfig = ResendConfig | SmtpConfig | { ok: false };
+export type MailConfig = ResendConfig | { ok: false; missing: string[] };
 
 export type OutboundMessage = {
   name: string;
@@ -37,8 +25,14 @@ export type OutboundMessage = {
   message: string;
 };
 
-function required(name: string): string {
-  return process.env[name]?.trim() ?? "";
+function readEnv(name: "RESEND_API_KEY" | "CONTACT_FROM_EMAIL" | "CONTACT_TO_EMAIL"): string {
+  const value =
+    name === "RESEND_API_KEY"
+      ? process.env.RESEND_API_KEY
+      : name === "CONTACT_FROM_EMAIL"
+        ? process.env.CONTACT_FROM_EMAIL
+        : process.env.CONTACT_TO_EMAIL;
+  return value?.trim() ?? "";
 }
 
 function formatFrom(from: string): string {
@@ -51,34 +45,17 @@ function bareAddress(from: string): string {
 }
 
 export function getMailConfig(): MailConfig {
-  const to = required("CONTACT_TO_EMAIL");
-  const from = required("CONTACT_FROM_EMAIL");
-  const provider = required("EMAIL_PROVIDER").toLowerCase();
+  const to = readEnv("CONTACT_TO_EMAIL");
+  const from = readEnv("CONTACT_FROM_EMAIL");
+  const apiKey = readEnv("RESEND_API_KEY");
+  const missing: string[] = [];
 
-  if (!EMAIL_PATTERN.test(to) || !EMAIL_PATTERN.test(bareAddress(from))) {
-    return { ok: false };
-  }
+  if (!apiKey) missing.push("RESEND_API_KEY");
+  if (!to || !EMAIL_PATTERN.test(to)) missing.push("CONTACT_TO_EMAIL");
+  if (!from || !EMAIL_PATTERN.test(bareAddress(from))) missing.push("CONTACT_FROM_EMAIL");
+  if (missing.length > 0) return { ok: false, missing };
 
-  const formattedFrom = formatFrom(from);
-
-  if (provider === "resend") {
-    const apiKey = required("RESEND_API_KEY");
-    if (!apiKey) return { ok: false };
-    return { ok: true, provider, to, from: formattedFrom, apiKey };
-  }
-
-  if (provider === "smtp") {
-    const host = required("SMTP_HOST");
-    const user = required("SMTP_USER");
-    const password = required("SMTP_PASSWORD");
-    const port = Number(required("SMTP_PORT"));
-    if (!host || !user || !password || !Number.isInteger(port) || port < 1 || port > 65535) {
-      return { ok: false };
-    }
-    return { ok: true, provider, to, from: formattedFrom, host, port, user, password };
-  }
-
-  return { ok: false };
+  return { ok: true, to, from: formatFrom(from), apiKey };
 }
 
 function messageText(message: OutboundMessage): string {
@@ -93,62 +70,31 @@ function messageText(message: OutboundMessage): string {
   ].join("\n");
 }
 
-async function sendWithResend(config: ResendConfig, message: OutboundMessage): Promise<boolean> {
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${config.apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: config.from,
-      to: [config.to],
-      reply_to: message.email,
-      subject: `[Pranda Global] ${message.subject}`,
-      text: messageText(message),
-    }),
-  });
-
-  if (!response.ok) {
-    console.error("Contact email was rejected by Resend", response.status);
-    return false;
-  }
-  return true;
-}
-
-async function sendWithSmtp(config: SmtpConfig, message: OutboundMessage): Promise<boolean> {
-  const transport = nodemailer.createTransport({
-    host: config.host,
-    port: config.port,
-    secure: config.port === 465,
-    auth: { user: config.user, pass: config.password },
-  });
-
-  await transport.sendMail({
-    from: config.from,
-    to: config.to,
-    replyTo: message.email,
-    subject: `[Pranda Global] ${message.subject}`,
-    text: messageText(message),
-  });
-  return true;
-}
-
-export async function sendContactEmail(message: OutboundMessage): Promise<"sent" | "unconfigured" | "failed"> {
+export async function sendContactEmail(
+  message: OutboundMessage,
+): Promise<"sent" | "unconfigured" | "failed"> {
   const config = getMailConfig();
-  if (!config.ok) return "unconfigured";
+  if (!config.ok) {
+    console.error(`Contact email is not configured: ${config.missing.join(", ")}`);
+    return "unconfigured";
+  }
 
   try {
-    const accepted =
-      config.provider === "resend"
-        ? await sendWithResend(config, message)
-        : await sendWithSmtp(config, message);
-    return accepted ? "sent" : "failed";
-  } catch (error) {
-    console.error(
-      "Contact email failed",
-      error instanceof Error ? error.message : "unknown error",
-    );
+    const resend = new Resend(config.apiKey);
+    const { error } = await resend.emails.send({
+      from: config.from,
+      to: [config.to],
+      replyTo: message.email,
+      subject: SUBJECT,
+      text: messageText(message),
+    });
+    if (error) {
+      console.error(`Contact email was rejected by Resend: ${error.name} ${error.statusCode ?? ""}`.trim());
+      return "failed";
+    }
+    return "sent";
+  } catch {
+    console.error("Contact email failed");
     return "failed";
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { Arrow } from "@/components/Arrow";
 import { LIMITS, MESSAGE_MIN, validateContact, type FieldName } from "@/lib/contact";
 
@@ -11,12 +12,13 @@ const FIELD_MESSAGES: Record<FieldName, string> = {
   message: `Please enter a message of at least ${MESSAGE_MIN} characters.`,
 };
 
-type Status = "idle" | "sending" | "success" | "error";
+type Status = "idle" | "sending" | "error";
 
 const inputClass =
   "mt-2 w-full border border-ivory/25 bg-transparent px-3 py-3 text-base text-ivory outline-none transition-colors duration-300 placeholder:text-ivory/40 focus:border-brass";
 
 export function ContactForm({ bookingUrl }: { bookingUrl: string }) {
+  const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<FieldName, string>>>({});
   const [formError, setFormError] = useState("");
@@ -36,8 +38,7 @@ export function ContactForm({ bookingUrl }: { bookingUrl: string }) {
       return;
     }
     if (checked.honeypot) {
-      form.reset();
-      setStatus("success");
+      router.push("/contact/success");
       return;
     }
 
@@ -55,8 +56,7 @@ export function ContactForm({ bookingUrl }: { bookingUrl: string }) {
       } | null;
 
       if (response.ok) {
-        form.reset();
-        setStatus("success");
+        router.push("/contact/success");
         return;
       }
       if (body?.error === "unavailable") {
@@ -108,19 +108,6 @@ export function ContactForm({ bookingUrl }: { bookingUrl: string }) {
         </div>
 
         <div className="reveal" data-reveal-delay="110">
-        {status === "success" ? (
-          <div role="status" className="max-w-md">
-            <p className="font-serif text-2xl">Thank you. Your message has been sent.</p>
-            <p className="mt-4 leading-relaxed text-ivory/75">We will reply to the email you provided.</p>
-            <button
-              type="button"
-              onClick={() => setStatus("idle")}
-              className="mt-8 text-sm tracking-wide text-brass underline-offset-4 hover:underline"
-            >
-              Send another message
-            </button>
-          </div>
-        ) : (
           <form onSubmit={onSubmit} noValidate className="max-w-xl">
             <div className="hp" aria-hidden="true">
               <label htmlFor="fax_number">Fax number</label>
@@ -191,7 +178,6 @@ export function ContactForm({ bookingUrl }: { bookingUrl: string }) {
               <Arrow />
             </button>
           </form>
-        )}
         </div>
       </div>
     </section>

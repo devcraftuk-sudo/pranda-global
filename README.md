@@ -13,21 +13,13 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Contact form
 
-`POST /api/contact` validates the submission and sends it through the provider selected by `EMAIL_PROVIDER`. The visitor’s email is the Reply-To address, and `CONTACT_FROM_EMAIL` is the From address. Success is shown only after the provider accepts the message. Credentials and provider errors stay on the server.
+`POST /api/contact` validates the submission and sends one plain-text email through Resend. The subject is always “New website enquiry — Pranda Global”. The visitor’s email is the Reply-To address, and `CONTACT_FROM_EMAIL` is the From address. `CONTACT_TO_EMAIL` is fixed on the server. After Resend accepts the message, the visitor is taken to `/contact/success`. Credentials, provider errors, and the submitted text stay off the browser response.
 
 Copy `.env.example` to `.env.local` for local delivery. On Vercel, set the same variables in Project Settings → Environment Variables, then redeploy. `BOOKING_URL` and `PRIVACY_POLICY_URL` are read when the page is built, so a redeploy is required after changing them.
 
-### Resend
+Set `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, and `CONTACT_TO_EMAIL`. The planned sender is `forms@notify.pranda.global`. The recipient is the client’s personal Gmail, which is separate from the Gmail used to sign in to Resend.
 
-Set `EMAIL_PROVIDER=resend` and `RESEND_API_KEY`.
-
-Before mail will send, verify the domain of `CONTACT_FROM_EMAIL` in the [Resend dashboard](https://resend.com/domains) and add the DNS records Resend provides (SPF and DKIM). An unverified domain is rejected, and the form shows a generic failure.
-
-### SMTP
-
-Set `EMAIL_PROVIDER=smtp` plus `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, and `SMTP_PASSWORD`. Port 465 uses implicit TLS; any other port uses STARTTLS.
-
-The account in `SMTP_USER` must be allowed to send as `CONTACT_FROM_EMAIL`. Most providers require that sender to be verified in their dashboard before they will accept mail.
+Before mail will send, verify `notify.pranda.global` in the [Resend dashboard](https://resend.com/domains) and add the DNS records Resend provides (SPF and DKIM). An unverified domain is rejected, and the form shows a generic failure.
 
 ## Editable content
 
