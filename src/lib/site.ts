@@ -113,7 +113,7 @@ export const whatsappUrl = "https://wa.me/554799161313";
  * The email button uses publicEmail.
  */
 export const contactChannels: { id: ContactChannelId; label: string; href: string }[] = [
-  { id: "instagram", label: "Instagram", href: "" },
+  { id: "instagram", label: "Instagram", href: "https://www.instagram.com/prandaglobal/" },
   { id: "email", label: "Email", href: "" },
   { id: "location", label: "Location", href: locationUrl },
   { id: "whatsapp", label: "WhatsApp", href: whatsappUrl },
